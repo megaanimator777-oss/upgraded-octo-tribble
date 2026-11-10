@@ -1,52 +1,15 @@
-
-name: Build DizzMusic APK
-
-on:
-  push:
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
+name: Build APK
+on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Extract DizzMusic project
-        run: |
-          mkdir -p DizzMusic
-          unzip -qo DizzMusic_stage1.zip -d DizzMusic
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 35
-        run: |
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
-
-      - name: Build APK
-        run: |
-          cd DizzMusic
-          gradle assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: DizzMusic-APK
-          path: DizzMusic/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+      - uses: actions/checkout@v4
+      - run: for z in *.zip; do unzip -qo "$z"; done
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@v3
+        with: { gradle-version: 8.7 }
+      - run: cd MusicViz && gradle assembleDebug
+      - uses: actions/upload-artifact@v4
+        with: { name: MusicViz-apk, path: MusicViz/app/build/outputs/apk/debug/app-debug.apk }
