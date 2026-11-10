@@ -19,7 +19,7 @@ jobs:
       - name: Extract project
         run: |
           mkdir -p DizzMusic
-          unzip -qo DizzMusic_stage1.zip -d DizzMusic
+          unzip -qo DizzMusic_stage1_fixed.zip -d DizzMusic
 
       - name: Setup Java
         uses: actions/setup-java@v4
